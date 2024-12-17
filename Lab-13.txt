@@ -1,0 +1,125 @@
+Q-1) // Write a java program to connect with MYSQL database .
+     // Check whether database is connected or not and print result as connection status.
+
+
+
+
+package example;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Connectiondemo {
+    public static void main(String[] args) {
+
+        Connection conn = null;								  // Initialize connection object
+
+        try {
+            
+            Class.forName("com.mysql.cj.jdbc.Driver");		 // register driver
+            
+            conn =  DriverManager.getConnection("jdbc:mysql://localhost:3306/batch8359","root","12345");
+
+            if (conn != null)								// Step 3: Check connection status
+            {
+                System.out.println("Connection to the database was successful!");
+            } 
+            else
+            {
+                System.out.println("Failed to connect to the database.");
+            }
+        } 
+        catch (SQLException | ClassNotFoundException e) {
+         
+            System.out.println("Error: " + e.getMessage());
+        }
+        finally 
+        {
+            try 
+            {
+                if (conn != null) {
+                    conn.close();
+                }
+            } 
+            catch (SQLException e)
+            {
+                System.out.println("Error closing the connection: " + e.getMessage());
+            }
+        }
+    }
+}
+
+
+Output-
+Connection to the database was successful!
+
+
+Q2)  // Write a java program to connect with MYSQL database  which has a  table with certain records.
+    // write select Query to select all records and print them.
+
+
+
+
+package example;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+
+
+public class Jdbcdemo
+{
+
+	public static void main(String[] args) throws SQLException{
+	{
+	
+		try 
+		{
+			Class.forName("com.mysql.cj.jdbc.Driver");              // register driver
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/connectiondemo","root","12345");
+			
+			String sql = "select * from student";                  // query
+			Statement stmt = (Statement) con.createStatement();                // create statement
+			
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(sql);
+			while(rs.next())                                        // fetch records & print
+			{
+				
+			System.out.println("ID      : "+rs.getInt(1));
+			System.out.println("Name    : "+rs.getString(2));
+			System.out.println("Percent : "+rs.getDouble(3));
+			
+			}	
+			rs.close();
+			con.close();
+			
+		} 
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}    
+	}
+	}
+}
+
+
+Output-
+
+
+ID      : 111
+Name    : karan
+Percent : 67.0
+ID      : 222
+Name    : amar
+Percent : 77.0
+ID      : 333
+Name    : amit
+Percent : 55.0
+
+
+
+	

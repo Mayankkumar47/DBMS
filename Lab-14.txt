@@ -1,0 +1,150 @@
+Q1) // Write a program to insert data of a customer in database. Use customer data and perform database connectivity operation.
+
+
+
+use batch8359;
+CREATE TABLE customer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(15)
+);
+
+// connection code
+
+package example;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class InsertDemo {
+    public static void main(String[] args) {
+       
+        // SQL query to insert data
+        String query = "INSERT INTO customer (name, email, phone) VALUES (?, ?, ?)";
+
+        // user input
+        Scanner scanner = new Scanner(System.in);
+
+        // input customer details
+        System.out.print("Enter customer name: ");
+        String name = scanner.nextLine();
+        
+        System.out.print("Enter customer email: ");
+        String email = scanner.nextLine();
+        
+        System.out.print("Enter customer phone number: ");
+        String phone = scanner.nextLine();
+
+        // Establish the database connection
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/batch8359","root","12345");
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // Set the values 
+            stmt.setString(1, name);
+            stmt.setString(2, email);
+            stmt.setString(3, phone);
+
+            // Execute the INSERT query
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) 
+            {
+                System.out.println("Customer data inserted successfully!");
+            } 
+            else 
+            {
+                System.out.println("Failed to insert customer data.");
+            }
+
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("Error: " + e.getMessage());
+        } 
+        finally 
+        {
+            scanner.close();
+        }
+    }
+}
+
+
+Output-
+
+Enter customer name: Mayank
+Enter customer email: Mayankkumar44@gmail.com
+Enter customer phone number: 8798965256
+Customer data inserted successfully!
+
+
+
+Q2) // Write a program to delete data of a customer from database. 
+   // use customer data and perform database connectivity operation.
+  // delete records using customer ID. 
+
+
+use batch8359;
+INSERT INTO customer (name, email, phone) VALUES ('Amit Jain', 'amitdoe@example.com', '123-456-7890');
+INSERT INTO customer (name, email, phone) VALUES ('Naman Singh', 'naman@example.com', '987-654-3210');
+
+
+// connection code
+
+
+package example;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class DeleteDemo {
+    public static void main(String[] args) {
+        
+        // SQL query 
+        String query = "DELETE FROM customer WHERE id = ?";
+
+        // user input
+        Scanner scanner = new Scanner(System.in);
+
+        // Prompt the user to input the customer ID to delete
+        System.out.print("Enter customer ID to delete: ");
+        int customerId = scanner.nextInt();
+
+        // Establish the database connection
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/batch8359","root","12345");
+             PreparedStatement stmt = conn.prepareStatement(query))
+        {
+            // Set the customer ID 
+            stmt.setInt(1, customerId);
+
+            // Execute the DELETE query
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) 
+            {
+                System.out.println("Customer with ID " + customerId + " deleted successfully!");
+            }
+            else 
+            {
+                System.out.println("No customer found with ID " + customerId);
+            }
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("Error: " + e.getMessage());
+        } 
+        finally 
+        {
+            scanner.close();
+        }
+    }
+}
+
+
+
+Output-
+Enter customer ID to delete: 1
+Customer with ID 1 deleted successfully!
+
+
+

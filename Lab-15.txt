@@ -1,0 +1,124 @@
+Q1) // Create a table as :  salary Log Table
+// Structure of Log Table is as follows : 
+// create table Salary_Log(log_id int primary key auto_increment,employee_id int,new_salary decimal(10,2),change_date timestamp default current_timestamp);
+// create and execute trigger on this table whenever a new record is inserted with new salary.
+
+
+
+
+USE lab;
+
+CREATE TABLE Employee (
+    employee_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    salary DECIMAL(10, 2),
+    department VARCHAR(50)
+);
+
+
+
+CREATE TABLE Salary_Log (
+    log_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_id INT,
+    new_salary DECIMAL(10,2),
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+DELIMITER //
+
+CREATE TRIGGER LogSalaryChange
+AFTER INSERT ON Employee
+FOR EACH ROW
+BEGIN
+    -- Insert the new salary record into the Salary_Log table
+    INSERT INTO Salary_Log (employee_id, new_salary)
+    VALUES (NEW.employee_id, NEW.salary);
+END; //
+
+DELIMITER ;
+
+
+INSERT INTO Employee (employee_id, name, salary, department) 
+VALUES (1, 'Rohit', 50000.00, 'Engineering');
+
+
+INSERT INTO Employee (employee_id, name, salary, department) 
+VALUES (2, 'Jane Smith', 55000.00, 'HR');
+
+SELECT * FROM Salary_Log;
+
+
+Output-
+log_id	employee_id	new_salary	change_date
+1	1		50000.00	2024-12-20 20:24:54
+2	2		55000.00	2024-12-20 20:34:56
+
+
+
+
+
+Q1)// Create a table as :  products Table
+// create table products(product_id int primary key auto_increment,product_name varchar(10),price decimal(10,2));
+// create another Table as  :  Product_Metadata table
+// create table Product_Metadata(product_id int,last_modified Timestamp default CURRENT_TIMESTAMP ON uPDATE CURRENT_TIMESTAMP);
+// create and execute trigger that insert record in Product_Metadata  table after new record insertion in products table.
+			
+
+
+
+
+USE lab;
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(10),
+    price DECIMAL(10, 2)
+);
+
+CREATE TABLE Product_Metadata (
+    product_id INT,
+    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+
+
+DELIMITER //
+
+CREATE TRIGGER AfterProductInsert
+AFTER INSERT ON products
+FOR EACH ROW
+BEGIN
+    -- Insert into Product_Metadata when a new product is inserted
+    INSERT INTO Product_Metadata (product_id) 
+    VALUES (NEW.product_id);
+END; //
+
+DELIMITER ;
+
+INSERT INTO products (product_name, price) 
+VALUES ('Laptop', 999.99);
+
+INSERT INTO products (product_name, price) 
+VALUES ('Smartphone', 599.99);
+
+SELECT * FROM products;
+
+Output-
+product_id	product_name	price
+1		Laptop		999.99
+2		Smartphone	599.99
+
+SELECT * FROM Product_Metadata;
+
+Output-
+product_id	last_modified
+1		2024-12-20 20:00:00
+2		2024-12-20 20:05:00
+
+
+
+
+
+
